@@ -33,11 +33,13 @@ Resources: # サーバレスアプリケーションコンポーネント定義
           Properties:
             Path: /users/{userId}
             Method: put
+            # curl -X PUT http://127.0.0.1:3000/users/1
         Delete:
           Type: Api
           Properties:
             Path: /users/{userId}
             Method: delete
+            # curl -X DELETE http://127.0.0.1:3000/users/1
   BulkUsers: # コンポーネント名 (Lambdaの場合は関数名になる)
     Type: AWS::Serverless::Function # SAM の関数定義
     Properties: # 関数定義
