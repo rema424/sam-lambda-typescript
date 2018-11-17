@@ -36,3 +36,10 @@ git commit -m "Initial commit"
 git remote add origin https://github.com/{your-username}/{your-repository-name}.git
 git push -u origin master
 ```
+
+Typescript
+
+```
+npm i -D typescript @types/node @types/aws-lambda
+npx tsc --init
+```
