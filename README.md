@@ -18,6 +18,6 @@ git add .
 git commit -m "Initial commit"
 
 # Push
-git remote add origin https://github.com/rema424/sam-lambda-typescript-tutorial.git
+git remote add origin https://github.com/{your-username}/{your-repository-name}.git
 git push -u origin master
 ```
