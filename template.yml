@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: "2010-09-09" # CloudFormation のバージョン情報
+Transform: AWS::Serverless-2016-10-31 # SAM のバージョン情報
+Description: TypeScript Clean Architecture Lambda Sample # スタックの説明
+
+Resources: # サーバレスアプリケーションコンポーネント定義
+  Users: # コンポーネント名 (Lambdaの場合は関数名になる)
+    Type: AWS::Serverless::Function # Lambdaコンポーネント
+    Properties: # 関数定義
+      CodeUri: ./build/
+      Handler: UsersRouter.run # Lamdaが起動するエントリーポイント
+      Runtime: nodejs8.10
+      Events: # イベント定義
+        List:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: get
+        Get:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: get
+        Create:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: post
+        Update:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: put
+        Delete:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: delete
+  BulkUsers: # コンポーネント名 (Lambdaの場合は関数名になる)
+    Type: AWS::Serverless::Function # SAM の関数定義
+    Properties: # 関数定義
+      CodeUri: ./build/ #
+      Handler: BulkUsersRouter.run # Lamdaが起動するエントリーポイント
+      Runtime: nodejs8.10 # ランタイムは Node.js,8.10
+      Events: # イベント定義
+        BulkGet:
+          Type: Api
+          Properties:
+            Path: /users/bulk/get
+            Method: post
+        BulkCreate:
+          Type: Api
+          Properties:
+            Path: /users/bulk/create
+            Method: post
+        BulkUpdate:
+          Type: Api
+          Properties:
+            Path: /users/bulk/update
+            Method: post
+        BulkDelete:
+          Type: Api
+          Properties:
+            Path: /users/bulk/delete
+            Method: post
