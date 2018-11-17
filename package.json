@@ -1,0 +1,28 @@
+{
+  "name": "sam-lambda-typescript-tutorial",
+  "version": "1.0.0",
+  "description": "sam-lambda-typescript-tutorial",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rema424/sam-lambda-typescript-tutorial.git"
+  },
+  "keywords": [
+    "aws",
+    "aws sam",
+    "lambda",
+    "api gateway",
+    "dynamoDB",
+    "typescript",
+    "clean architecture"
+  ],
+  "author": "rema424",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rema424/sam-lambda-typescript-tutorial/issues"
+  },
+  "homepage": "https://github.com/rema424/sam-lambda-typescript-tutorial#readme"
+}
