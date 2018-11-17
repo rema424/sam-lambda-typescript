@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09" # CloudFormation のバージョン情報
+AWSTemplateFormatVersion: '2010-09-09' # CloudFormation のバージョン情報
 Transform: AWS::Serverless-2016-10-31 # SAM のバージョン情報
 Description: TypeScript Clean Architecture Lambda Sample # スタックの説明
 
@@ -15,16 +15,19 @@ Resources: # サーバレスアプリケーションコンポーネント定義
           Properties:
             Path: /users
             Method: get
+            # curl -X GET http://127.0.0.1:3000/users
         Get:
           Type: Api
           Properties:
             Path: /users/{userId}
             Method: get
+            # curl -X GET http://127.0.0.1:3000/users/1
         Create:
           Type: Api
           Properties:
             Path: /users
             Method: post
+            # curl -X POST http://127.0.0.1:3000/users -d '{"message": "hogefuga"}'
         Update:
           Type: Api
           Properties:
@@ -42,22 +45,22 @@ Resources: # サーバレスアプリケーションコンポーネント定義
       Handler: BulkUsersRouter.run # Lamdaが起動するエントリーポイント
       Runtime: nodejs8.10 # ランタイムは Node.js,8.10
       Events: # イベント定義
-        BulkGet:
+        Get:
           Type: Api
           Properties:
             Path: /users/bulk/get
             Method: post
-        BulkCreate:
+        Create:
           Type: Api
           Properties:
             Path: /users/bulk/create
             Method: post
-        BulkUpdate:
+        Update:
           Type: Api
           Properties:
             Path: /users/bulk/update
             Method: post
-        BulkDelete:
+        Delete:
           Type: Api
           Properties:
             Path: /users/bulk/delete
