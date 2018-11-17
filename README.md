@@ -1,4 +1,4 @@
-#sam-lambda-typescript-tutorial
+# sam-lambda-typescript-tutorial
 
 ## Start Project
 
@@ -11,5 +11,13 @@ cd sam-lambda-typescript-tutorial
 git init
 
 # README.md作成
-echo '#sam-lambda-typescript-tutorial' >> README.md
+echo '# sam-lambda-typescript-tutorial' >> README.md
+
+# Initial commit
+git add .
+git commit -m "Initial commit"
+
+# Push
+git remote add origin https://github.com/rema424/sam-lambda-typescript-tutorial.git
+git push -u origin master
 ```
