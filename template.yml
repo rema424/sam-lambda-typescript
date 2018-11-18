@@ -7,7 +7,7 @@ Resources: # サーバレスアプリケーションコンポーネント定義
     Type: AWS::Serverless::Function # Lambdaコンポーネント
     Properties: # 関数定義
       CodeUri: ./build/
-      Handler: UsersRouter.run # Lamdaが起動するエントリーポイント
+      Handler: UsersEntry.main # Lamdaが起動するエントリーポイント
       Runtime: nodejs8.10
       Events: # イベント定義
         List:

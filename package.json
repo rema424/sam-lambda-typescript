@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
-    "start": "sam local start-api"
+    "build": "rm -r ./build && npx tsc",
+    "start": "sam local start-api",
+    "package": "rm -rf build artifact.zip && npx tsc && rm -rf ./node_modules && npm i --production && zip -r artifact.zip build node_modules -i '*.js' '*.json' '**/bin/*' '**/.bin/*' && npm i",
+    "debug:Users": "sam local generate-event api -m PUT -p /users/55 -r /users/{userId} -b '{\"message\": \"test post message\"}' | sam local invoke -d 5858 Users",
+    "debug:Users2": "npx tsc && sam local invoke -e event/get.json -d 5858 Users"
   },
   "repository": {
     "type": "git",
@@ -30,6 +33,10 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.15",
     "@types/node": "^10.12.9",
+    "@types/uuid": "^3.4.4",
     "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "uuid": "^3.3.2"
   }
 }

@@ -1,21 +1,29 @@
+import { User, TUserInput } from './entities/User';
+import { UserController } from './adapters/UserController';
+import { UserUseCase } from './usecases/UserUsecase';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-export async function run(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+export async function main(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   console.log('event.httpMethod', event.httpMethod);
   console.log('event.body', event.body);
+
+  const userUseCase = new UserUseCase();
+  const userController = new UserController(userUseCase);
+
   const id: string = (event.pathParameters || {}).userId || '';
+
   switch (event.httpMethod) {
     case 'GET':
       if (id) {
-        return getUser(event);
+        return userController.getUser(event);
       }
-      return listUsers(event);
+      return userController.listUsers(event);
     case 'POST':
-      return createUser(event);
+      return userController.createUser(event);
     case 'PUT':
-      return updateUser(event);
+      return userController.updateUser(event);
     case 'DELETE':
-      return deleteUser(event);
+      return userController.deleteUser(event);
     default:
       // Send HTTP 501: Not Implemented
       console.log('Error: unsupported HTTP method (' + event.httpMethod + ')');
@@ -43,6 +51,16 @@ async function getUser(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResu
 }
 
 async function listUsers(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+  const obj: TUserInput = {
+    id: '',
+    name: 'taro sato',
+    email: 'aaaaa@example.com',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const user1 = new User(obj);
+  const user2 = new User();
+
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     headers: { my_header: 'my_value' },
@@ -52,6 +70,8 @@ async function listUsers(event: APIGatewayProxyEvent): Promise<APIGatewayProxyRe
       method: event.httpMethod,
       pathParameters: event.pathParameters,
       message: `List users.`,
+      user1: user1.greet(),
+      user2: user2.greet(),
     }),
   };
   return response;
