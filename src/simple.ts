@@ -1,12 +1,26 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { APIGatewayEvent } from 'aws-lambda';
 import uuid from 'uuid';
-import { eventNames } from 'cluster';
-import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from 'constants';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 
 const docClient = new DocumentClient();
 const _params = { TableName: 'SampleUser' };
+
+export async function handler(event: APIGatewayEvent) {
+  if (event.httpMethod) {
+  }
+  const groupId = '1';
+  const id = '2';
+  const [users1, users2, user3, user4] = await Promise.all([
+    scanListUsers(groupId),
+    queryListUsers(groupId),
+    getUser(id),
+    createUser('1', 'test', 'test@example.com'),
+  ]);
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ users1, users2, user3, user4 }),
+  };
+}
 
 async function scanListUsers(groupId: string) {
   const params = Object.assign({}, _params, {
@@ -119,18 +133,3 @@ type User = {
   createdAt: string;
   updatedAt: string;
 };
-
-export async function handler(event: APIGatewayEvent) {
-  const groupId = '1';
-  const id = '2';
-  const [users1, users2, user3, user4] = await Promise.all([
-    scanListUsers(groupId),
-    queryListUsers(groupId),
-    getUser(id),
-    createUser('1', 'test', 'test@example.com'),
-  ]);
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ users1, users2, user3, user4 }),
-  };
-}

@@ -10,7 +10,7 @@
       "request": "attach",
       "port": 5858,
       "address": "localhost",
-      "localRoot": "${workspaceFolder}/build",
+      "localRoot": "${workspaceFolder}/build/simple",
       "remoteRoot": "/var/task",
       "protocol": "inspector",
       "smartStep": false,

@@ -67,3 +67,15 @@ Resources: # サーバレスアプリケーションコンポーネント定義
           Properties:
             Path: /users/bulk/delete
             Method: post
+  Test: # コンポーネント名 (Lambdaの場合は関数名になる)
+    Type: AWS::Serverless::Function # SAM の関数定義
+    Properties: # 関数定義
+      CodeUri: ./build/simple/ #
+      Handler: simple.handler # Lamdaが起動するエントリーポイント
+      Runtime: nodejs8.10 # ランタイムは Node.js,8.10
+      Events: # イベント定義
+        Test:
+          Type: Api
+          Properties:
+            Path: /users/
+            Method: post
