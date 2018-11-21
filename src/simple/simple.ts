@@ -23,7 +23,13 @@ export async function handler(event: APIGatewayEvent) {
     address: '東京都江東区',
   });
 
-  return await createUser(event);
+  event.pathParameters = {
+    groupId: '1',
+    id: '1',
+  };
+
+  // return await createUser(event);
+  return await getUser(event);
 
   // switch (event.httpMethod) {
   //   case 'GET':
@@ -221,6 +227,29 @@ async function createUser(event: APIGatewayEvent) {
   }
 }
 
+async function getUser(event: APIGatewayEvent) {
+  const params = Object.assign({}, _params, {
+    Key: {
+      groupId: (event.pathParameters || {}).groupId || '', // パーティションキー
+      id: (event.pathParameters || {}).id || '', // ソートキーがある場合はここに追加
+    },
+  });
+  try {
+    const data = await docClient.get(params).promise();
+    console.log('get data', data);
+    return {
+      stausCode: 200,
+      body: JSON.stringify(data.Item || {}),
+    };
+  } catch (err) {
+    console.log('get error', err);
+    return {
+      stausCode: 501,
+      body: JSON.stringify(err.message),
+    };
+  }
+}
+
 async function scanListUsers(groupId: string) {
   const params = Object.assign({}, _params, {
     FilterExpression: 'groupId = :groupId',
@@ -258,29 +287,6 @@ async function queryListUsers(groupId: string) {
     };
   } catch (err) {
     console.log('query list error', err);
-    return {
-      stausCode: 501,
-      body: JSON.stringify(err.message),
-    };
-  }
-}
-
-async function getUser(id: string) {
-  const params = Object.assign({}, _params, {
-    Key: {
-      id, // パーティションキー
-      // ソートキーがある場合はここに追加
-    },
-  });
-  try {
-    const data = await docClient.get(params).promise();
-    console.log('get data', data);
-    return {
-      stausCode: 200,
-      body: JSON.stringify(data.Item || {}),
-    };
-  } catch (err) {
-    console.log('get error', err);
     return {
       stausCode: 501,
       body: JSON.stringify(err.message),
