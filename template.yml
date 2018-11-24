@@ -2,80 +2,94 @@ AWSTemplateFormatVersion: '2010-09-09' # CloudFormation のバージョン情報
 Transform: AWS::Serverless-2016-10-31 # SAM のバージョン情報
 Description: TypeScript Clean Architecture Lambda Sample # スタックの説明
 
-Resources: # サーバレスアプリケーションコンポーネント定義
-  Users: # コンポーネント名 (Lambdaの場合は関数名になる)
-    Type: AWS::Serverless::Function # Lambdaコンポーネント
-    Properties: # 関数定義
-      CodeUri: ./build/
-      Handler: UsersEntry.main # Lamdaが起動するエントリーポイント
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - test
+      - stg
+      - prod
+    Description: Environment of his stack of resources
+
+Resources:
+  # Lambda
+  Users:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub UsersFunction-${Environment}
+      CodeUri: ./build/simple
+      Handler: simple.handler
       Runtime: nodejs8.10
-      Events: # イベント定義
-        List:
+      MemorySize: 128
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
+      Events:
+        List: # curl -X GET http://127.0.0.1:3000/users
           Type: Api
           Properties:
             Path: /users
             Method: get
-            # curl -X GET http://127.0.0.1:3000/users
-        Get:
+        Get: # curl -X GET http://127.0.0.1:3000/users/1
           Type: Api
           Properties:
             Path: /users/{userId}
             Method: get
-            # curl -X GET http://127.0.0.1:3000/users/1
-        Create:
+        Create: # curl -X POST http://127.0.0.1:3000/users -d '{"message": "hogefuga"}'
           Type: Api
           Properties:
             Path: /users
             Method: post
-            # curl -X POST http://127.0.0.1:3000/users -d '{"message": "hogefuga"}'
-        Update:
+        Update: # curl -X PUT http://127.0.0.1:3000/users/1
           Type: Api
           Properties:
             Path: /users/{userId}
             Method: put
-            # curl -X PUT http://127.0.0.1:3000/users/1
-        Delete:
+        Delete: # curl -X DELETE http://127.0.0.1:3000/users/1
           Type: Api
           Properties:
             Path: /users/{userId}
             Method: delete
-            # curl -X DELETE http://127.0.0.1:3000/users/1
-  BulkUsers: # コンポーネント名 (Lambdaの場合は関数名になる)
-    Type: AWS::Serverless::Function # SAM の関数定義
-    Properties: # 関数定義
-      CodeUri: ./build/ #
-      Handler: BulkUsersRouter.run # Lamdaが起動するエントリーポイント
-      Runtime: nodejs8.10 # ランタイムは Node.js,8.10
-      Events: # イベント定義
-        Get:
-          Type: Api
-          Properties:
-            Path: /users/bulk/get
-            Method: post
-        Create:
-          Type: Api
-          Properties:
-            Path: /users/bulk/create
-            Method: post
-        Update:
-          Type: Api
-          Properties:
-            Path: /users/bulk/update
-            Method: post
-        Delete:
-          Type: Api
-          Properties:
-            Path: /users/bulk/delete
-            Method: post
-  Test: # コンポーネント名 (Lambdaの場合は関数名になる)
-    Type: AWS::Serverless::Function # SAM の関数定義
-    Properties: # 関数定義
-      CodeUri: ./build/simple/ #
-      Handler: simple.handler # Lamdaが起動するエントリーポイント
-      Runtime: nodejs8.10 # ランタイムは Node.js,8.10
-      Events: # イベント定義
-        Test:
-          Type: Api
-          Properties:
-            Path: /users/
-            Method: post
+  # Lambda
+  # BulkUsers:
+  #   Type: AWS::Serverless::Function # SAM の関数定義
+  #   Properties: # 関数定義
+  #     CodeUri: ./build/ #
+  #     Handler: BulkUsersRouter.run # Lamdaが起動するエントリーポイント
+  #     Runtime: nodejs8.10 # ランタイムは Node.js,8.10
+  #     Events: # イベント定義
+  #       Get:
+  #         Type: Api
+  #         Properties:
+  #           Path: /users/bulk/get
+  #           Method: post
+  #       Create:
+  #         Type: Api
+  #         Properties:
+  #           Path: /users/bulk/create
+  #           Method: post
+  #       Update:
+  #         Type: Api
+  #         Properties:
+  #           Path: /users/bulk/update
+  #           Method: post
+  #       Delete:
+  #         Type: Api
+  #         Properties:
+  #           Path: /users/bulk/delete
+  #           Method: post
+  # Test: # コンポーネント名 (Lambdaの場合は関数名になる)
+  #   Type: AWS::Serverless::Function # SAM の関数定義
+  #   Properties: # 関数定義
+  #     CodeUri: ./build/ #
+  #     Handler: simple.handler # Lamdaが起動するエントリーポイント
+  #     Runtime: nodejs8.10 # ランタイムは Node.js,8.10
+  #     Events: # イベント定義
+  #       Test:
+  #         Type: Api
+  #         Properties:
+  #           Path: /users/
+  #           Method: post

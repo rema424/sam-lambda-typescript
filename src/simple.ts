@@ -6,6 +6,10 @@ const docClient = new DocumentClient();
 const _params = { TableName: 'SampleUser' };
 
 export async function handler(event: APIGatewayEvent) {
+  return {
+    statusCode: 200,
+    body: 'Hello Lambda!',
+  };
   if (event.httpMethod) {
   }
   const groupId = '1';

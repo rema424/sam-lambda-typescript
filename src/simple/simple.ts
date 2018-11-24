@@ -29,29 +29,49 @@ export async function handler(event: APIGatewayEvent) {
   };
 
   // return await createUser(event);
-  return await getUser(event);
+  // return await getUser(event);
 
-  // switch (event.httpMethod) {
-  //   case 'GET':
-  //     if (id) {
-  //       return getUser(event);
-  //     }
-  //     return listUsers(event);
-  //   case 'POST':
-  //     return createUser(event);
-  //   case 'PUT':
-  //     return updateUser(event);
-  //   case 'DELETE':
-  //     return deleteUser(event);
-  //   default:
-  //     // Send HTTP 501: Not Implemented
-  //     console.log('Error: unsupported HTTP method (' + event.httpMethod + ')');
-  //     return {
-  //       statusCode: 501,
-  //       headers: { my_header: 'my_value' },
-  //       body: JSON.stringify({}),
-  //     };
-  // }
+  switch (event.httpMethod) {
+    case 'GET':
+      if (id) {
+        // return getUser(event);
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ message: 'GET' }),
+        };
+      }
+      // return listUsers(event);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'LIST' }),
+      };
+    case 'POST':
+      // return createUser(event);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'POST' }),
+      };
+    case 'PUT':
+      // return updateUser(event);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'PUT' }),
+      };
+    case 'DELETE':
+      // return deleteUser(event);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'DELETE' }),
+      };
+    default:
+      // Send HTTP 501: Not Implemented
+      console.log('Error: unsupported HTTP method (' + event.httpMethod + ')');
+      return {
+        statusCode: 501,
+        headers: { my_header: 'my_value' },
+        body: JSON.stringify({}),
+      };
+  }
 }
 
 type UserDto = {
