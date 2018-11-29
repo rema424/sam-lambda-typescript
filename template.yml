@@ -1,6 +1,6 @@
-AWSTemplateFormatVersion: '2010-09-09' # CloudFormation のバージョン情報
-Transform: AWS::Serverless-2016-10-31 # SAM のバージョン情報
-Description: TypeScript Clean Architecture Lambda Sample # スタックの説明
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: TypeScript Clean Architecture Lambda Sample
 
 Parameters:
   Environment:
@@ -15,11 +15,11 @@ Parameters:
 
 Resources:
   # Lambda
-  Users:
+  Employees:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub UsersFunction-${Environment}
-      CodeUri: ./build/simple
+      FunctionName: !Sub EmployeesFunction-${Environment}
+      CodeUri: ./build
       Handler: simple.handler
       Runtime: nodejs8.10
       MemorySize: 128
@@ -28,68 +28,55 @@ Resources:
         - AWSLambdaBasicExecutionRole
         - AmazonDynamoDBFullAccess
       Events:
-        List: # curl -X GET http://127.0.0.1:3000/users
+        List: # curl -X GET http://127.0.0.1:3000/employees
           Type: Api
           Properties:
-            Path: /users
+            Path: /employees
             Method: get
-        Get: # curl -X GET http://127.0.0.1:3000/users/1
+        Get: # curl -X GET http://127.0.0.1:3000/employees/1
           Type: Api
           Properties:
-            Path: /users/{userId}
+            Path: /employees/{employeeId}
             Method: get
-        Create: # curl -X POST http://127.0.0.1:3000/users -d '{"message": "hogefuga"}'
+        Create: # curl -X POST http://127.0.0.1:3000/employees -d '{"message": "hogefuga"}'
           Type: Api
           Properties:
-            Path: /users
+            Path: /employees
             Method: post
-        Update: # curl -X PUT http://127.0.0.1:3000/users/1
+        Update: # curl -X PUT http://127.0.0.1:3000/employees/1
           Type: Api
           Properties:
-            Path: /users/{userId}
+            Path: /employees/{employeeId}
             Method: put
-        Delete: # curl -X DELETE http://127.0.0.1:3000/users/1
+        Delete: # curl -X DELETE http://127.0.0.1:3000/employees/1
           Type: Api
           Properties:
-            Path: /users/{userId}
+            Path: /employees/{employeeId}
             Method: delete
-  # Lambda
-  # BulkUsers:
-  #   Type: AWS::Serverless::Function # SAM の関数定義
-  #   Properties: # 関数定義
-  #     CodeUri: ./build/ #
-  #     Handler: BulkUsersRouter.run # Lamdaが起動するエントリーポイント
-  #     Runtime: nodejs8.10 # ランタイムは Node.js,8.10
-  #     Events: # イベント定義
-  #       Get:
-  #         Type: Api
-  #         Properties:
-  #           Path: /users/bulk/get
-  #           Method: post
-  #       Create:
-  #         Type: Api
-  #         Properties:
-  #           Path: /users/bulk/create
-  #           Method: post
-  #       Update:
-  #         Type: Api
-  #         Properties:
-  #           Path: /users/bulk/update
-  #           Method: post
-  #       Delete:
-  #         Type: Api
-  #         Properties:
-  #           Path: /users/bulk/delete
-  #           Method: post
-  # Test: # コンポーネント名 (Lambdaの場合は関数名になる)
-  #   Type: AWS::Serverless::Function # SAM の関数定義
-  #   Properties: # 関数定義
-  #     CodeUri: ./build/ #
-  #     Handler: simple.handler # Lamdaが起動するエントリーポイント
-  #     Runtime: nodejs8.10 # ランタイムは Node.js,8.10
-  #     Events: # イベント定義
-  #       Test:
-  #         Type: Api
-  #         Properties:
-  #           Path: /users/
-  #           Method: post
+  # Dynamo DB
+  DDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: 'DepartmentId'
+          AttributeType: 'S'
+        - AttributeName: 'EmployeeId'
+          AttributeType: 'S'
+        # KeySchemaに関係ない属性をここで宣言すると `Property AttributeDefinitions is inconsistent with the KeySchema of the table and the secondary indexes`
+        # - AttributeName: 'Name'
+        #   AttributeType: 'S'
+        # - AttributeName: 'Email'
+        #   AttributeType: 'S'
+        # - AttributeName: 'CreatedAt'
+        #   AttributeType: 'S'
+        # - AttributeName: 'UpdatedAt'
+        #   AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'DepartmentId'
+          KeyType: 'HASH'
+        - AttributeName: 'EmployeeId'
+          KeyType: 'RANGE'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: !Sub Employees-${Environment}
